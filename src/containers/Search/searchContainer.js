@@ -4,6 +4,7 @@
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 
 import './styles/search.less'
 
@@ -11,13 +12,13 @@ import './styles/search.less'
 import * as searchActions from 'actions/search';
 
 import { Header } from 'components/Search/header';
-import { HotSearch } from 'components/Search/HotSearch';
+import { HotSearch } from 'components/Search/hotSearch';
 
 @connect(
     state => state,
     dispatch => bindActionCreators(searchActions, dispatch)
 )
-export default class SearchContainer extends Component {
+export default class SearchContainer extends React.Component {
 
     constructor(props) {
         super(props);
@@ -25,11 +26,10 @@ export default class SearchContainer extends Component {
     }
 
     componentWillMount() {
-        this.props.receiveHotSearch();
+        this.props.receiveHotSearch()
     }
 
     componentDidMount() {
-        console.log("渲染完成打印");
     }
 
     hotClick(text) {
@@ -37,10 +37,10 @@ export default class SearchContainer extends Component {
     }
 
     render() {
-        console.log('进入搜索页面。。。')
         const { hotData } = this.props.search
+
         return (
-            <div>
+            <div key={this.props} style={{height: '100vh'}}>
                 <Header />
                 <div>
                     <p className="search-hot-title">
@@ -50,21 +50,25 @@ export default class SearchContainer extends Component {
                     <p className="style_div_p">
                         {
                             hotData.length > 0 &&
-                                hotData.map((elem, index) => {
-                                    return (
-                                        <HotSearch
-                                            ref="hotSearch"
-                                            key={index}
-                                            hotText={elem.text}
-                                            hotClick={() => this.hotClick(elem.text)}
-                                            {...this.props}
-                                        />
-                                    )
-                                })
+                            hotData.map((elem, index) => {
+                                return (
+                                    <HotSearch
+                                        ref="hotSearch"
+                                        key={index}
+                                        hotText={elem.text}
+                                        hotClick={() => this.hotClick(elem.text)}
+                                        {...this.props}
+                                    />
+                                )
+                            })
                         }
                     </p>
                 </div>
             </div>
         )
     }
+}
+
+SearchContainer.propTypes = {
+    hotData: PropTypes.array
 }
